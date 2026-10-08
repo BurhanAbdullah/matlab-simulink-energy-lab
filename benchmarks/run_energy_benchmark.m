@@ -9,7 +9,10 @@ function report = run_energy_benchmark(varargin)
 
 options = parse_options(varargin{:});
 rootDirectory = fileparts(fileparts(mfilename('fullpath')));
-addpath(fullfile(rootDirectory, 'examples'));
+addpath(genpath(fullfile(rootDirectory, 'examples', 'battery-2rc-model')));
+addpath(genpath(fullfile(rootDirectory, 'examples', 'battery-soc-ekf')));
+addpath(genpath(fullfile(rootDirectory, 'examples', 'battery-thermal-model')));
+addpath(genpath(fullfile(rootDirectory, 'examples', 'bess-dc-reserve-model')));
 
 gates = benchmark_default_parameters();
 
@@ -209,18 +212,3 @@ tableData = cell2table(rows, 'VariableNames', ...
 writetable(tableData, pathName);
 end
 
-function result = simulate_battery_soc_ekf_example()
-modelDirectory = fileparts(fullfile(mfilename('fullpath')));
-fn = fullfile(modelDirectory, '..', 'examples', ...
-    'battery-soc-ekf', 'simulate_battery_soc_ekf_example.m');
-if ~isfile(fn)
-    fn = fullfile(modelDirectory, '..', 'examples', ...
-        'battery-soc-ekf', 'simulate_battery_soc_ekf_example.m');
-end
-if ~isfile(fn)
-    error('EnergyBenchmark:Dependency', ...
-        'Expected battery SOC EKF example was not found.');
-end
-addpath(fileparts(fn));
-result = feval('simulate_battery_soc_ekf_example');
-end
