@@ -1,0 +1,40 @@
+name: Energy benchmark regression
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "benchmarks/**"
+      - "examples/**"
+      - ".github/workflows/matlab-energy-benchmark.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "benchmarks/**"
+      - "examples/**"
+      - ".github/workflows/matlab-energy-benchmark.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: Deterministic energy KPI benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Set up MATLAB R2026a
+        uses: matlab-actions/setup-matlab@2323adb8243827ea460b0def4c413545aaec46a9 # v3
+        with:
+          release: R2026a
+
+      - name: Run benchmark and regression check
+        uses: matlab-actions/run-command@75644028e1e2aa374bbfdc968a65718a178cc264 # v3
+        with:
+          command: addpath('benchmarks'); check_energy_benchmark
